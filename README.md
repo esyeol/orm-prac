@@ -1,7 +1,7 @@
 ## Type-ORM Practice 
 
 
-> pakage
+> package
 
 ```bash 
 $ yarn add @nestjs/typeorm typeorm pg                       
