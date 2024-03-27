@@ -8,6 +8,11 @@ import {
   VersionColumn,
 } from 'typeorm';
 
+export enum Role {
+  USER = 'user',
+  ADMIN = 'admin',
+}
+
 @Entity()
 export class UserModel {
   // ORM PK 값을 넣어줄 떄, 1,2,3... 이아니라 uuid 속성을 defualt 로 삽입 가능
@@ -36,6 +41,14 @@ export class UserModel {
     unique: false,
   })
   title: string;
+
+  @Column({
+    // column 속성으로 enum을 지정할 때 다음과 같이 처리할 수 있음.
+    type: 'enum',
+    enum: Role,
+    default: Role.USER,
+  })
+  role: string;
 
   @CreateDateColumn()
   createdAt: Date;
