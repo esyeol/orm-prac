@@ -3,6 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModel } from './entity/user.entity';
+import { StudentModel, TeacherModel } from './entity/person.entity';
+import {
+  AirplaneModel,
+  BookModel,
+  CarModel,
+  ComputerModel,
+  SingleBaseModel,
+} from './entity/inheritance.entity';
 
 // 임의로 con
 @Module({
@@ -15,7 +23,16 @@ import { UserModel } from './entity/user.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'practice',
-      entities: [UserModel],
+      entities: [
+        UserModel,
+        StudentModel,
+        TeacherModel,
+        BookModel,
+        CarModel,
+        SingleBaseModel,
+        ComputerModel,
+        AirplaneModel,
+      ],
       synchronize: true,
     }),
   ],
