@@ -20,7 +20,15 @@ export class AppController {
 
   @Get('users')
   getUsers() {
-    return this.userRepository.find();
+    // return this.userRepository.find();
+
+    // entity 의 select 속성이 false일 경우 find에 select 조건으로 원하는 row 조회
+    return this.userRepository.find({
+      select: {
+        id: true,
+        title: true,
+      },
+    });
   }
 
   @Patch('users/:id')
