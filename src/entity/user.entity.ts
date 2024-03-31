@@ -75,7 +75,21 @@ export class UserModel {
   @Generated('increment')
   additionalId: number;
 
-  @OneToOne(() => ProfileModel, (profile) => profile.user)
+  @OneToOne(() => ProfileModel, (profile) => profile.user, {
+    // find 실행시 항상 같이 가져올 Relation
+    eager: true, // default false
+    // 값 저장시 realation을 한번에 저장
+    cascade: true, // default false,
+    // null 여부 체크
+    nullable: true, // default true
+    // 관계 삭제시
+    // no action => 아무런 반응 X
+    // cascade => 참조하는 Row도 같이 삭제
+    // set null => 참조하는 Row에서 참조 id를 null로 변경
+    // set default => 기본 세팅으로 설정 (테이블의 기본 세팅)
+    // restrict => 참조하고 있는 Row가 있는 경우 참조당하는 Row는 삭제 X
+    onDelete: 'RESTRICT',
+  })
   profile: ProfileModel;
 
   @OneToMany(() => PostModel, (post) => post.author)
