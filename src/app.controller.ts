@@ -29,6 +29,72 @@ export class AppController {
 
   @Get('users')
   getUsers() {
+    // userEntity에서 profile 테이블의 eager 속성이 true일 경우
+    // one-to-one 상태에서 값을 default로 가져올 수 있음 별도의 realation 속성 작성 X
+    return this.userRepository.find({
+      /**
+       * 원하는 프로퍼티를 가져올 수 있도록 지정하는 옵션
+       * SQL 쿼리에서 가져오고자 하는 옵션값을 지정하는거랑 동일함
+       * default => *
+      
+       */
+      select: {
+        id: true,
+        version: true,
+        createdAt: true,
+        updatedAt: true,
+        profile: {
+          id: true,
+        },
+      },
+      /**
+       * 걍 SQL where 절이랑 동일
+       * 단, Where 의 프로퍼티가 객체일경우 AND 조건으로 조회해서 가져옴
+       * OR 조건으로 조회하고 싶으면 프로퍼티를 리스트로 변경 해야함
+       * */
+
+      /**AND 조건 */
+      // where: {
+      //   id: 3,
+      //   veresion: 1,
+      // },
+
+      // /**OR 조건으로 조회시 다음과 같이 조회 id가 3이거나 verison 1인 케이스를 조회*/
+      // where: [
+      //   {
+      //     id: 3,
+      //   },
+      //   {
+      //     version: 1,
+      //   },
+      // ],
+
+      /** 필터링 조건에 relation 을 기반으로 조회 가능 */
+      // where: {
+      //   profile: {
+      //     id: 3,
+      //   },
+      // },
+      // 관계를 가져옴
+      relations: {
+        profile: true,
+      },
+
+      // 정렬 ASC, DESC
+      order: {
+        id: 'DESC',
+      },
+
+      /**처음 N개를 제외할지 정렬한 이후 입력한 N개를 제외한 데이터를 조회 가능( Default 0)*/
+      skip: 0,
+      /**
+       * N개를 가져올지 조회
+       * Default 0
+       * 실제 가지고 있는 데이터의 갯수보다 크게 입력하면 그 크기만큼만 조회해서 가져옴
+       * */
+      take: 6,
+    });
+
     // /**
     //  * user 조회시 user entity와 one-to-one 인 profile entity를 가져오기 위한 속성
     //  * SQL Join 유사함
@@ -47,10 +113,6 @@ export class AppController {
     //     title: true,
     //   },
     // });
-
-    // userEntity에서 profile 테이블의 eager 속성이 true일 경우
-    // one-to-one 상태에서 값을 default로 가져올 수 있음 별도의 realation 속성 작성 X
-    return this.userRepository.find({});
   }
 
   @Patch('users/:id')
@@ -63,7 +125,7 @@ export class AppController {
 
     return this.userRepository.save({
       ...user,
-      // title: user.title + '0',
+      email: user.email + '0',
     });
   }
 
