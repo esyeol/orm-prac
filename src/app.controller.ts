@@ -1,8 +1,8 @@
 import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 // import { AppService } from './app.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role, UserModel } from './entity/user.entity';
-import { LessThan, Not, Repository } from 'typeorm';
+import { UserModel } from './entity/user.entity';
+import { ILike, LessThan, Repository } from 'typeorm';
 import { ProfileModel } from './entity/profile.entity';
 import { PostModel } from './entity/post.entity';
 import { TagModel } from './entity/tag.entity';
@@ -30,6 +30,73 @@ export class AppController {
     // return this.userRepository.save({
     //   role: Role.ADMIN,
     // });
+  }
+
+  @Post('sample')
+  async sample() {
+    // // 모델에 해당하는 객체 생성 -> 저장X
+    // const user1 = await this.userRepository.create({
+    //   email: 'test@test.test',
+    // });
+    // // 실제 생성 및 저장
+    // const user2 = await this.userRepository.save({
+    //   email: 'test@test.test',
+    // });
+    //   // preload
+    //   // 입력된 값을 기반으로 데이터 베이스에 있는 데이터 호출하고
+    //   // 추가 입력된 값으로 데이터베이스에서 가져온 값들을 대체
+    //   // 값을 실제로 저장 X
+    //   const user3 = await this.userRepository.preload({
+    //     id: 100,
+    //     email: 'test3@test.test',
+    //   });
+    //   return user3;
+    // }
+    // // 제거
+    // await this.userRepository.delete(101);
+    // // incremnt => 특정 조건에 해당하는 값의 속성을 N 만큼 증가
+    // await this.userRepository.increment(
+    //   {
+    //     id: 2,
+    //   },
+    //   'count',
+    //   2,
+    // );
+    // // decrement => 특정 조건에 해당하는 값의 속성을 N 만큼 감소
+    // await this.userRepository.decrement(
+    //   {
+    //     id: 1,
+    //   },
+    //   'count',
+    //   1,
+    // );
+    // // count() 갯수 카운팅
+    // const count = await this.userRepository.count({
+    //   where: {
+    //     email: ILike('%0%'),
+    //   },
+    // });
+    // // sum
+    // const sum = await this.userRepository.sum('count', {
+    //   email: ILike('%0%'),
+    // });
+    // // avgerage
+    // const avg = await this.userRepository.average('count', {
+    //   id: LessThan(4),
+    // });
+    // // minimum
+    // const min = await this.userRepository.minimum('count', {
+    //   id: LessThan(4),
+    // });
+    // // maximum
+    // const max = await this.userRepository.maximum('count', {
+    //   id: LessThan(4),
+    // });
+    // // take 갯수만큼 찾고 전체 갯수를 조회
+    // const usersAndCount = await this.userRepository.findAndCount({
+    //   take: 3,
+    // });
+    // return usersAndCount;
   }
 
   @Get('users')
@@ -117,9 +184,9 @@ export class AppController {
       //   profile: true,
       // },
       /** 정렬 ASC, DESC */
-      // order: {
-      //   id: 'DESC',
-      // },
+      order: {
+        id: 'ASC',
+      },
       /**처음 N개를 제외할지 정렬한 이후 입력한 N개를 제외한 데이터를 조회 가능( Default 0)*/
       // skip: 0,
       /**
