@@ -2,7 +2,7 @@ import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 // import { AppService } from './app.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role, UserModel } from './entity/user.entity';
-import { Repository } from 'typeorm';
+import { LessThan, Not, Repository } from 'typeorm';
 import { ProfileModel } from './entity/profile.entity';
 import { PostModel } from './entity/post.entity';
 import { TagModel } from './entity/tag.entity';
@@ -21,10 +21,15 @@ export class AppController {
   ) {}
 
   @Post('users')
-  createUser() {
-    return this.userRepository.save({
-      role: Role.ADMIN,
-    });
+  async createUser() {
+    for (let i = 0; i < 100; i++) {
+      await this.userRepository.save({
+        email: `user-${i}@google.com`,
+      });
+    }
+    // return this.userRepository.save({
+    //   role: Role.ADMIN,
+    // });
   }
 
   @Get('users')
@@ -36,29 +41,26 @@ export class AppController {
        * 원하는 프로퍼티를 가져올 수 있도록 지정하는 옵션
        * SQL 쿼리에서 가져오고자 하는 옵션값을 지정하는거랑 동일함
        * default => *
-      
        */
-      select: {
-        id: true,
-        version: true,
-        createdAt: true,
-        updatedAt: true,
-        profile: {
-          id: true,
-        },
-      },
+      // select: {
+      //   id: true,
+      //   version: true,
+      //   createdAt: true,
+      //   updatedAt: true,
+      //   profile: {
+      //     id: true,
+      //   },
+      // },
       /**
        * 걍 SQL where 절이랑 동일
        * 단, Where 의 프로퍼티가 객체일경우 AND 조건으로 조회해서 가져옴
        * OR 조건으로 조회하고 싶으면 프로퍼티를 리스트로 변경 해야함
        * */
-
       /**AND 조건 */
       // where: {
       //   id: 3,
       //   veresion: 1,
       // },
-
       // /**OR 조건으로 조회시 다음과 같이 조회 id가 3이거나 verison 1인 케이스를 조회*/
       // where: [
       //   {
@@ -68,31 +70,64 @@ export class AppController {
       //     version: 1,
       //   },
       // ],
-
       /** 필터링 조건에 relation 을 기반으로 조회 가능 */
       // where: {
       //   profile: {
       //     id: 3,
       //   },
       // },
-      // 관계를 가져옴
-      relations: {
-        profile: true,
+
+      where: {
+        /**
+         * NOT() 특정 속성값이 아닌 경우에가져올 경우
+         * id: Not(1), => id가 1 인 값을 제외
+         *
+         * LessThan() 적은 경우 조회
+         * LessThan(30) => 1 ~ 29 조회
+         *
+         * LessThanOrEqual() 적거나 같은 경우
+         * LessThanOrEqual(30) => 1 ~ 30 조회
+         *
+         * MoreThan() 특정 값 이상 조회
+         * MoreThan(30) 30 이후의 값 조회 (31 ~ N)
+         *
+         * MoreThanOrEqual() 특정 값 포함 조회
+         * MoreThanOrEqual(30) 30 포함 이후의 값 조회 (30 ~ N)
+         *
+         * Like() 일반 SQL like 절과 동일함 => 대소문자 구분
+         * LIKE(%N%)
+         *
+         * ILIKE() LIKE와 동일하나 대소문자 구분 X
+         * ILIKE(%N%)
+         *
+         * Between() 사이값을 조회 할 수 있음
+         * Between(10, 15)
+         *
+         * IN() => 포함된 값들을 조회
+         * IN([N,N+1, N+3....])
+         *
+         * ISNULL() NULL인 경우 조회
+         */
+
+        id: LessThan(30),
       },
 
-      // 정렬 ASC, DESC
-      order: {
-        id: 'DESC',
-      },
-
+      /**관계된 프로퍼티를 포함해서 조회*/
+      // relations: {
+      //   profile: true,
+      // },
+      /** 정렬 ASC, DESC */
+      // order: {
+      //   id: 'DESC',
+      // },
       /**처음 N개를 제외할지 정렬한 이후 입력한 N개를 제외한 데이터를 조회 가능( Default 0)*/
-      skip: 0,
+      // skip: 0,
       /**
        * N개를 가져올지 조회
        * Default 0
        * 실제 가지고 있는 데이터의 갯수보다 크게 입력하면 그 크기만큼만 조회해서 가져옴
        * */
-      take: 6,
+      // take: 6,
     });
 
     // /**
